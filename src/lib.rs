@@ -1,15 +1,15 @@
-#![doc(html_root_url = "https://docs.rs/bezier-interpolation/0.1.0")]
+#![doc(html_root_url = "https://docs.rs/bezier-interpolation/0.2.0")]
 //! bezier interpolation for Rust
 //!
 //! link freetype.lib
 //!
 
-pub mod bezier_interpolation;
+pub mod ncr;
 
 /*
 #[cfg(test)]
 mod tests {
-  use super::bezier_interpolation::*;
+  use super::ncr::*;
   use freetype as ft;
 
   /// with [-- --nocapture] or with [-- --show-output]

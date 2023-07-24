@@ -275,7 +275,7 @@ impl<I: Neg<Output = I> + Sub<Output = I> + Add<Output = I> + Mul<Output = I>
 }
 
 /// offset (x, y) scale (sc) pitch (p)
-type OfsSclPch = ((i32, i32), f64, i32);
+pub type OfsSclPch = ((i32, i32), f64, i32);
 
 /// GlyphContour
 pub struct GlyphContour {
@@ -301,6 +301,7 @@ impl GlyphContour {
       control: control, spec: spec, children: children}
   }
 
+  /// get contour or control processed (offset scale pitch)
   pub fn osp_pts(&self, osp: OfsSclPch, ctrl: bool) -> Vec<(i32, i32)>{
     match ctrl {
     false => self.contour.iter(),
