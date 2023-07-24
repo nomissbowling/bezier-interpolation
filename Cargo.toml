@@ -1,0 +1,28 @@
+[package]
+name = "bezier-interpolation"
+version = "0.1.0" # change with html_root_url in lib.rs
+edition = "2021"
+authors = ["nomissbowling <nomissbowling@yahoo.co.jp>"]
+
+description = "bezier interpolation for Rust"
+keywords = ["bezier", "interpolation", "font", "glyph", "plotters"]
+categories = ["algorithms", "rendering", "science", "mathematics"]
+license = "MIT"
+
+documentation = "https://docs.rs/bezier-interpolation/"
+homepage = "https://crates.io/crates/bezier-interpolation"
+repository = "https://github.com/nomissbowling/bezier-interpolation"
+
+readme = "README.md"
+
+#build = "build.rs"
+
+[lib]
+name = "bezier_interpolation"
+
+[dependencies]
+# freetype-rs = { version = "0.32.0" } # needless to link freetype.lib .dll
+freetype-rs = { version = "0.7" } # (with plotters) must link freetype.lib
+
+# plotters = { version = "0.3.5" } # plotters => font-kit 0.11.0 => freetype 0.7
+# image = { version = "0.24.6" }
