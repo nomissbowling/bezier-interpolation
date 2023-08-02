@@ -4,6 +4,7 @@
 //!
 
 use std::ops::*;
+use std::collections::BTreeMap;
 
 use freetype as ft;
 
@@ -138,18 +139,18 @@ pub trait Path2d<I> {
     ()
   }
 
-  /// get rotation left: false or right: true
-  fn get_lr(c: &Vec<(i32, i32)>) -> bool { // not perfect
+  /// get area (rotation left or right)
+  fn get_area(c: &Vec<(i32, i32)>) -> i32 {
     let mut sz = c.len();
     if sz > 0 && c[0] == c[sz - 1] { sz -= 1; } // check closed contour
-    if sz < 3 { false }
-//    else { c[sz / 2].diff2d(c[0]).cross2d(c[sz - 1].diff2d(c[sz / 2])) < 0 }
-//    else { c[1].diff2d(c[0]).cross2d(c[0].diff2d(c[sz - 1])) < 0 }
-//    else { c[1].diff2d(c[0]).cross2d(c[sz - 1].diff2d(c[1])) < 0 }
+    if sz < 3 { 0 }
+//    else { c[sz / 2].diff2d(c[0]).cross2d(c[sz - 1].diff2d(c[sz / 2])) }
+//    else { c[1].diff2d(c[0]).cross2d(c[0].diff2d(c[sz - 1])) }
+//    else { c[1].diff2d(c[0]).cross2d(c[sz - 1].diff2d(c[1])) }
     else {
       (1..sz-1).into_iter().map(|i| {
         c[i].diff2d(c[0]).cross2d(c[i+1].diff2d(c[0]))
-      }).reduce(|p, q| p + q).unwrap() < 0
+      }).reduce(|p, q| p + q).unwrap()
     }
   }
 
@@ -240,7 +241,8 @@ impl<I: Neg<Output = I> + Sub<Output = I> + Add<Output = I> + Mul<Output = I>
 */
 //    println!("flags: {:x}", outline.raw.flags); // can not access private
     let mut v = Vec::<GlyphContour>::new(); // dynamic tree
-    for contour in outline.contours_iter() {
+    let mut layered = BTreeMap::<(i32, usize), GlyphContour>::new(); // sort
+    for (n, contour) in outline.contours_iter().enumerate() {
       let mut o = vec![]; // outline
       let mut c = vec![]; // control points
       let mut s = vec![]; // special points (same length of control points)
@@ -268,7 +270,11 @@ impl<I: Neg<Output = I> + Sub<Output = I> + Add<Output = I> + Mul<Output = I>
         }
       }
 //      println!("");
-      v.push(GlyphContour::new(Self::get_lr(&c), o, c, s, vec![]));
+      let a: i32 = Self::get_area(&c);
+      layered.insert((-a.abs(), n), GlyphContour::new(a < 0, o, c, s, vec![]));
+    }
+    for k in layered.iter().map(|(&k, _)| k).collect::<Vec<(i32, usize)>>() {
+      v.push(layered.remove(&k).unwrap());
     }
     v
   }

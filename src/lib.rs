@@ -1,4 +1,4 @@
-#![doc(html_root_url = "https://docs.rs/bezier-interpolation/0.2.0")]
+#![doc(html_root_url = "https://docs.rs/bezier-interpolation/0.3.0")]
 //! bezier interpolation for Rust
 //!
 //! link freetype.lib
